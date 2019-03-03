@@ -24,7 +24,7 @@ public class Szerviz {
             eredmeny = szamologep.szorzas(operandusok[0], operandusok[1]) + "";
             return Double.parseDouble(eredmeny);
         }
-        else if (input.getMuvelet().equals("osztas")) {
+        else if (input.getMuvelet().equals("oszt")) {
             int[] operandusok = input.getOperandusok();
             eredmeny = szamologep.osztas(operandusok[0], operandusok[1]) + "";
             return Double.parseDouble(eredmeny);
