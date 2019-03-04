@@ -184,29 +184,29 @@ public class AppTest {
     }
 
     @Test
-    public void szerviz_amikorNullInput_akkorErvenytelenmuveletHibakod() {
-        Input input = null;
+    public void szerviz_amikorNullInput_akkorErvenytelenbemenetHibakod(){
+        Input input = new Input();
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
-        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENMUVELET));
+        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENBEMENET));
     }
 
     @Test
-    public void szerviz_amikorUresMuveletEsOperandusok_akkorErvenytelenmuveletHibakod() {
+    public void szerviz_amikorUresMuveletEsOperandusok_akkorErvenytelenbemenetHibakod() {
         Input input = new Input();
         input.setMuvelet("");
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
-        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENMUVELET));
+        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENBEMENET));
     }
 
     @Test
-    public void szerviz_amikorElirtMuveletEsUresOperandusok_akkorErvenytelenmuveletHibakod() {
+    public void szerviz_amikorElirtMuveletEsUresOperandusok_akkorErvenytelenoperandusHibakod() {
         Input input = new Input();
         input.setMuvelet("oztas");
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
-        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENMUVELET));
+        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENOPREANDUS));
     }
 
     @Test
@@ -215,8 +215,8 @@ public class AppTest {
         double[] operandusok = new double[2];
         operandusok[0] = 3;
         operandusok[1] = 4;
-        input.setOperandusok(operandusok);
         input.setMuvelet("oztas");
+        input.setOperandusok(operandusok);
 
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
@@ -274,7 +274,7 @@ public class AppTest {
     }
 
     @Test
-    public void szerviz_amikorElsoOperandusNullDeTobbiErvenyes_akkorErvenytelenoperandusHibakod() {
+    public void szerviz_amikorElsoOperandusNullDeTobbiErvenyes_akkorErvenyesHibakod() {
         double[] operandusok = new double[2];
         operandusok[1] = 3;
         Input input = new Input();
@@ -282,11 +282,11 @@ public class AppTest {
         input.setOperandusok(operandusok);
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
-        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENOPREANDUS));
+        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYES));
     }
 
     @Test
-    public void szerviz_amikorMasodikOperandusNullDeTobbiErvenyes_akkorErvenytelenoperandusHibakod() {
+    public void szerviz_amikorMasodikOperandusNullDeTobbiErvenyes_akkorErvenyesHibakod() {
         double[] operandusok = new double[2];
         operandusok[0] = 3;
         Input input = new Input();
@@ -294,7 +294,7 @@ public class AppTest {
         input.setOperandusok(operandusok);
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
-        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYTELENOPREANDUS));
+        Assert.assertThat(szerviz.szamol(input).getHibakod(), is(Hibakod.ERVENYES));
     }
 
     @Test
@@ -303,7 +303,7 @@ public class AppTest {
         operandusok[0] = 3;
         operandusok[1] = 0;
         Input input = new Input();
-        input.setMuvelet("osztas");
+        input.setMuvelet("oszt");
         input.setOperandusok(operandusok);
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);
@@ -316,7 +316,7 @@ public class AppTest {
         operandusok[1] = 3;
         operandusok[0] = 0;
         Input input = new Input();
-        input.setMuvelet("osztas");
+        input.setMuvelet("oszt");
         input.setOperandusok(operandusok);
         SzamologepInterface szamologepInterface = mock(SzamologepInterface.class);
         Szerviz szerviz = new Szerviz(szamologepInterface);

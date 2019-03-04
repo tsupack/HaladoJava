@@ -2,7 +2,7 @@ package hu.me;
 
 public class Input {
     private String muvelet;
-    private double[] operandusok = new double[2];
+    private double[] operandusok;
 
     public String getMuvelet() {
         this.muvelet = muvelet.toLowerCase();
