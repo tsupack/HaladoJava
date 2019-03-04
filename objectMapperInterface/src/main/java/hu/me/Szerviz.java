@@ -1,34 +1,55 @@
 package hu.me;
 
 import hu.me.exceptions.DivisionByZeroException;
-import hu.me.exceptions.InvalidProcedureException;
 
 public class Szerviz {
+    private SzamologepInterface szamologepInterface;
 
-    public double szamol(Input input) throws DivisionByZeroException, InvalidProcedureException {
-        Szamologep szamologep = new Szamologep();
-        String eredmeny;
+    public Szerviz(SzamologepInterface szamologepInterface){
+        this.szamologepInterface = szamologepInterface;
+    }
 
-        if (input.getMuvelet().equals("osszead")) {
-            int[] operandusok = input.getOperandusok();
-            eredmeny = szamologep.osszeadas(operandusok[0], operandusok[1]) + "";
-            return Double.parseDouble(eredmeny);
+    public Output szamol(Input input){
+        Output output = new Output();
+
+        if (input == null || input.getMuvelet() == null || input.getMuvelet().isEmpty()) {
+            output.setUzenet("Erveytelen bemeneti muvelet!");
+            output.setHibakod(Hibakod.ERVENYTELENMUVELET);
+            return output;
         }
-        else if (input.getMuvelet().equals("kivon")) {
-            int[] operandusok = input.getOperandusok();
-            eredmeny = szamologep.kivonas(operandusok[0], operandusok[1]) + "";
-            return Double.parseDouble(eredmeny);
+        if (input.getOperandusok() == null) {
+            output.setUzenet("Ervenytelen operandusok!");
+            output.setHibakod(Hibakod.ERVENYTELENOPREANDUS);
+            return output;
         }
-        else if (input.getMuvelet().equals("szoroz")) {
-            int[] operandusok = input.getOperandusok();
-            eredmeny = szamologep.szorzas(operandusok[0], operandusok[1]) + "";
-            return Double.parseDouble(eredmeny);
+        if ("osszead".equals(input.getMuvelet())) {
+            output.setEredmeny(szamologepInterface.osszeadas(input.getOperandus1(), input.getOperandus2()));
+            output.setUzenet("Nincs hiba.");
+            output.setHibakod(Hibakod.ERVENYES);
+            return output;
+        } else if ("kivon".equals(input.getMuvelet())) {
+            output.setEredmeny(szamologepInterface.kivonas(input.getOperandus1(), input.getOperandus2()));
+            output.setUzenet("Nincs hiba.");
+            output.setHibakod(Hibakod.ERVENYES);
+            return output;
+        } else if ("szoroz".equals(input.getMuvelet())) {
+            output.setEredmeny(szamologepInterface.szorzas(input.getOperandus1(), input.getOperandus2()));
+            output.setUzenet("Nincs hiba.");
+            output.setHibakod(Hibakod.ERVENYES);
+            return output;
+        } else if ("oszt".equals(input.getMuvelet())) {
+            try {
+                if (input.getOperandus2() == 0) throw new DivisionByZeroException();
+                output.setEredmeny(szamologepInterface.osztas(input.getOperandus1(), input.getOperandus2()));
+            } catch (DivisionByZeroException e) {
+                output.setHibakod(Hibakod.NULLAVALVALOOSZTAS);
+                output.setUzenet("Nem lehet 0-val osztani!");
+                return output;
+            }
+            output.setUzenet("Nincs hiba.");
+            output.setHibakod(Hibakod.ERVENYES);
+            return output;
         }
-        else if (input.getMuvelet().equals("oszt")) {
-            int[] operandusok = input.getOperandusok();
-            eredmeny = szamologep.osztas(operandusok[0], operandusok[1]) + "";
-            return Double.parseDouble(eredmeny);
-        }
-        else throw new InvalidProcedureException();
+        return output;
     }
 }

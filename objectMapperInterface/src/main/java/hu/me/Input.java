@@ -1,27 +1,31 @@
 package hu.me;
 
-import hu.me.exceptions.InvalidProcedureException;
-
 public class Input {
     private String muvelet;
-    private int[] operandusok;
+    private double[] operandusok = new double[2];
 
     public String getMuvelet() {
         this.muvelet = muvelet.toLowerCase();
         return muvelet;
     }
 
-    public void setMuvelet(String muvelet) throws InvalidProcedureException {
-        if (!(muvelet.toLowerCase().equals("osszead") || muvelet.toLowerCase().equals("kivon") || muvelet.toLowerCase().equals("szoroz") || muvelet.toLowerCase().equals("oszt")))
-            throw new InvalidProcedureException();
-        this.muvelet = muvelet.toLowerCase();
+    public void setMuvelet(String muvelet){
+        this.muvelet = muvelet;
     }
 
-    public int[] getOperandusok() {
-        return operandusok;
+    public double getOperandus1() {
+        return operandusok[0];
     }
 
-    public void setOperandusok(int[] operandusok) {
+    public double getOperandus2() {
+        return operandusok[1];
+    }
+
+    public void setOperandusok(double[] operandusok) {
         this.operandusok = operandusok;
+    }
+
+    public double[] getOperandusok() {
+        return operandusok;
     }
 }
