@@ -1,14 +1,10 @@
 package hu.me;
 
-import hu.me.controller.Controller;
+import hu.me.controller.implementation.Controller;
 import hu.me.core.User;
-import hu.me.service.exceptions.InvalidUserInformationException;
-import hu.me.service.implementation.Service;
-import hu.me.utils.implementation.LengthChecker;
+import hu.me.utils.implementation.*;
 import hu.me.utils.Checker;
-import hu.me.utils.implementation.NoSpaceChecker;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
@@ -19,11 +15,16 @@ public class App {
         int valasztas = 0;
 
         Collection<Checker> checkers = new ArrayList<>();
-        checkers.add(new LengthChecker());
-        checkers.add(new NoSpaceChecker());
+        checkers.add(new NullCheckerUsername());
+        checkers.add(new NullCheckerPassword());
+        checkers.add(new LengthCheckerUsername());
+        checkers.add(new LengthCheckerPassword());
+        checkers.add(new NoSpaceCheckerUsername());
+        checkers.add(new NoSpaceCheckerPassword());
 
-        Service service = new Service(checkers);
-        Controller controller = new Controller(service);
+        Collection<String> messages;
+
+        Controller controller = new Controller(checkers);
         Scanner sc = new Scanner(System.in);
 
         while (fut) {
@@ -44,20 +45,26 @@ public class App {
                     System.out.println("Kerem adja meg a jelszavat!");
                     String password = sc.nextLine();
                     user.setPassword(password);
-                    try {
-                        controller.saveUser(user);
+
+                    boolean hibatlan = true;
+                    messages = controller.storeUser(user);
+                    if (!(messages.isEmpty())){
+                        hibatlan = false;
+                    }
+
+                    if (hibatlan) {
                         System.out.println("Sikeres belepes!");
-                        user = service.load();
-                        System.out.println("\nUsername: "+user.getUsername());
-                    } catch (InvalidUserInformationException e){
-                        System.out.println("Ervenytelen belepesi adatok!" + e.getMessage());
-                    } catch (IOException e){
-                        System.out.println("Hibas fajlmuvelet!" + e.getMessage());
+                    }
+                    else {
+                        System.out.println("Sikertelen belepes! Hibak:");
+                        for ( String message : messages ){
+                            System.out.println(message);
+                        }
                     }
                     break;
                 }
                 case 2: {
-                    for (User i : service.getUserStorage()) {
+                    for (User i : controller.getUserStorage()) {
                         System.out.println(i);
                     }
                     break;
