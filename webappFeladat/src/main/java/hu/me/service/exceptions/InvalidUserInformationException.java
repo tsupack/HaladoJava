@@ -1,4 +1,4 @@
-package hu.me.exceptions;
+package hu.me.service.exceptions;
 
 public class InvalidUserInformationException extends Exception {
     public InvalidUserInformationException() {
