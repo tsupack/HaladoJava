@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>hu.me</groupId>
-  <artifactId>objectMapperInterface</artifactId>
+  <artifactId>webapp</artifactId>
   <version>0.0.1</version>
 
-  <name>objectMapperInterface</name>
+  <name>webappFeladat</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -61,23 +61,7 @@
       <artifactId>jackson-dataformat-yaml</artifactId>
       <version>2.9.8</version>
     </dependency>
-
-    <dependency>
-      <groupId>hu.me</groupId>
-      <artifactId>logika</artifactId>
-      <version>0.0.1</version>
-    </dependency>
   </dependencies>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
