@@ -2,9 +2,9 @@ package hu.me.utils;
 
 public class ValidatorResponse {
     private boolean valid;
-    private String errorMessage;
+    private ErrorMessage errorMessage;
 
-    public ValidatorResponse(boolean valid, String errorMessage){
+    public ValidatorResponse(boolean valid, ErrorMessage errorMessage){
         this.valid = valid;
         this.errorMessage = errorMessage;
     }
@@ -17,11 +17,11 @@ public class ValidatorResponse {
         this.valid = valid;
     }
 
-    public String getErrorMessage() {
+    public ErrorMessage getErrorMessage() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(ErrorMessage errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

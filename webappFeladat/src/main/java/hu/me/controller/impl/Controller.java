@@ -1,9 +1,9 @@
-package hu.me.controller.implementation;
-
+package hu.me.controller.impl;
 
 import hu.me.core.User;
 import hu.me.controller.ControllerInterface;
 import hu.me.utils.Checker;
+import hu.me.utils.ErrorMessage;
 import hu.me.utils.ValidatorResponse;
 
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ public class Controller implements ControllerInterface {
     private Collection<User> userStorage;
     private Collection<Checker> checkers;
     private Collection<ValidatorResponse> validatorResponses;
-    private Collection<String> responses;
+    private Collection<ErrorMessage> responses;
 
     public Controller(Collection<Checker> checkers) {
         this.userStorage = new ArrayList<>();
         this.checkers = checkers;
     }
 
-    public Collection<String> storeUser(User user){
+    public Collection<ErrorMessage> storeUser(User user){
         validatorResponses = new ArrayList<>();
         responses = new ArrayList<>();
         for (Checker checker : checkers) {

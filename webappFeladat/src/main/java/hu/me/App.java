@@ -1,8 +1,9 @@
 package hu.me;
 
-import hu.me.controller.implementation.Controller;
+import hu.me.controller.impl.Controller;
 import hu.me.core.User;
-import hu.me.utils.implementation.*;
+import hu.me.utils.ErrorMessage;
+import hu.me.utils.impl.*;
 import hu.me.utils.Checker;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class App {
         checkers.add(new NoSpaceCheckerUsername());
         checkers.add(new NoSpaceCheckerPassword());
 
-        Collection<String> messages;
+        Collection<ErrorMessage> messages;
 
         Controller controller = new Controller(checkers);
         Scanner sc = new Scanner(System.in);
@@ -57,7 +58,7 @@ public class App {
                     }
                     else {
                         System.out.println("Sikertelen belepes! Hibak:");
-                        for ( String message : messages ){
+                        for ( ErrorMessage message : messages ){
                             System.out.println(message);
                         }
                     }

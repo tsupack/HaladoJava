@@ -1,7 +1,8 @@
-package hu.me.utils.implementation;
+package hu.me.utils.impl;
 
 import hu.me.core.User;
 import hu.me.utils.Checker;
+import hu.me.utils.ErrorMessage;
 import hu.me.utils.ValidatorResponse;
 
 public class NullCheckerPassword implements Checker {
@@ -9,10 +10,10 @@ public class NullCheckerPassword implements Checker {
     public ValidatorResponse valid(User user) {
         ValidatorResponse validatorResponse;
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            validatorResponse = new ValidatorResponse(false, "PASSWORDISEMPTY");
+            validatorResponse = new ValidatorResponse(false, ErrorMessage.PASSWORDISNULL);
             return validatorResponse;
         } else {
-            validatorResponse = new ValidatorResponse(true, "OKAY");
+            validatorResponse = new ValidatorResponse(true, ErrorMessage.VALID);
             return validatorResponse;
         }
     }
