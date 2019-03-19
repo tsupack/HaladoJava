@@ -24,6 +24,12 @@ public class Controller implements ControllerInterface {
     public Collection<ErrorMessage> storeUser(User user){
         validatorResponses = new ArrayList<>();
         responses = new ArrayList<>();
+
+        if (checkers == null || checkers.isEmpty()) {
+            responses.add(ErrorMessage.EMPTYCHECKERARRAY);
+            return responses;
+        }
+
         for (Checker checker : checkers) {
             validatorResponses.add(checker.valid(user));
         }

@@ -36,6 +36,7 @@ public class ControllerTest {
     private ValidatorResponse validatorResponse3;
     private ValidatorResponse validatorResponse4;
     private ValidatorResponse validatorResponse5;
+    private ArrayList<ErrorMessage> response;
 
     @Before
     public void setUp() {
@@ -114,17 +115,21 @@ public class ControllerTest {
     public void controller_saveUser_withEmptyCheckerArray(){
         checkers = new ArrayList<>();
         controller = new Controller(checkers);
+        response = new ArrayList<>();
+        response.add(ErrorMessage.EMPTYCHECKERARRAY);
         controller.storeUser(user);
 
-        Assert.assertTrue(controller.getUserStorage().contains(user));
+        Assert.assertEquals(controller.storeUser(user), response);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void controller_saveUser_nullCheckerArray(){
         controller = new Controller(null);
+        response = new ArrayList<>();
+        response.add(ErrorMessage.EMPTYCHECKERARRAY);
         controller.storeUser(user);
 
-        Assert.assertTrue(controller.getUserStorage().contains(user));
+        Assert.assertEquals(controller.storeUser(user), response);
     }
 
     @Test
@@ -142,12 +147,26 @@ public class ControllerTest {
         controller.storeUser(user);
 
         Mockito.verify(lengthCheckerUsername).valid(argument.capture());
-        Mockito.verify(lengthCheckerPassword).valid(argument.capture());
-        Mockito.verify(noSpaceCheckerUsername).valid(argument.capture());
-        Mockito.verify(noSpaceCheckerPassword).valid(argument.capture());
-        Mockito.verify(nullCheckerUsername).valid(argument.capture());
-        Mockito.verify(nullCheckerPassword).valid(argument.capture());
+        Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
+        Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
 
+        Mockito.verify(lengthCheckerPassword).valid(argument.capture());
+        Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
+        Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
+
+        Mockito.verify(noSpaceCheckerUsername).valid(argument.capture());
+        Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
+        Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
+
+        Mockito.verify(noSpaceCheckerPassword).valid(argument.capture());
+        Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
+        Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
+
+        Mockito.verify(nullCheckerUsername).valid(argument.capture());
+        Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
+        Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
+
+        Mockito.verify(nullCheckerPassword).valid(argument.capture());
         Assert.assertEquals(argument.getValue().getUsername(), "Toth_Zoltan96");
         Assert.assertEquals(argument.getValue().getPassword(), "ennyiMegEgyBambi");
     }

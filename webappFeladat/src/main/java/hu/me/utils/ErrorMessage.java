@@ -2,6 +2,7 @@ package hu.me.utils;
 
 public enum ErrorMessage {
     VALID,
+    EMPTYCHECKERARRAY,
     USERNAMETOOSHORT,
     PASSWORDTOOSHORT,
     USERNAMECONTAINSWHITESPACE,
