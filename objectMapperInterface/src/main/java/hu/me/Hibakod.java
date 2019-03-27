@@ -1,0 +1,9 @@
+package hu.me;
+
+public enum Hibakod {
+    ERVENYES,
+    ERVENYTELENBEMENET,
+    ERVENYTELENOPREANDUS,
+    ERVENYTELENMUVELET,
+    NULLAVALVALOOSZTAS
+}
