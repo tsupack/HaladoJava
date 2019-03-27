@@ -21,7 +21,7 @@ public class Kontroller {
         int valasztas = 0;
         while (fut) {
             sc = new Scanner(System.in);
-            System.out.println("\nValasszon az alabbi menupontok kozul (1-6)!");
+            System.out.println("\nValasszon az alabbi menupontok kozul (1-4)!");
             System.out.println("1 - Szamolas konzollal");
             System.out.println("2 - Szamolas JSON fajllal");
             System.out.println("3 - Szamolas YAML fajllal");
