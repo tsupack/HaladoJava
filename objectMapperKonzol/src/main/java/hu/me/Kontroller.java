@@ -1,136 +1,148 @@
 package hu.me;
 
-import hu.me.exceptions.DivisionByZeroException;
-import hu.me.exceptions.InvalidProcedureException;
-
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Kontroller {
 
     private boolean fut;
+    private Szamologep szamologep;
     private Szerviz szerviz;
     private Marshaller marshaller;
     private Scanner sc;
 
     public void fut(){
         fut = true;
-        int valasztas = 0;
+        szamologep = new Szamologep();
+        szerviz = new Szerviz(szamologep);
         marshaller = new Marshaller();
-        szerviz = new Szerviz();
+
+        int valasztas = 0;
         while (fut) {
             sc = new Scanner(System.in);
             System.out.println("\nValasszon az alabbi menupontok kozul (1-6)!");
             System.out.println("1 - Szamolas konzollal");
             System.out.println("2 - Szamolas JSON fajllal");
             System.out.println("3 - Szamolas YAML fajllal");
-            System.out.println("4 - JSON fajl keszitese szamolashoz");
-            System.out.println("5 - YAML fajl keszitese szamolashoz");
-            System.out.println("6 - Kilepes");
+            System.out.println("4 - Kilepes");
             try {
                 valasztas = Integer.parseInt(sc.nextLine());
             }
-            catch (NumberFormatException e) {}
+            catch (NumberFormatException e) {
+                System.out.println("Hiba! - " + e.getMessage());
+            }
             switch(valasztas){
-                case 1: {szamolasKonzollal(); break;}
+                case 1: {
+                    szamolasKonzollal();
+                    break;
+                }
                 case 2: {
-                    System.out.println("Bemeneti JSON fajl neve?");
-                    szamolasJsonnel(sc.nextLine());
+                    szamolasJsonnel();
                     break;
                 }
                 case 3: {
-                    System.out.println("Bemeneti YAML fajl neve?");
-                    szamolasYamllal(sc.nextLine());
+                    szamolasYamllal();
                     break;
                 }
                 case 4: {
-                    System.out.println("Menteni kivant JSON fajl neve?");
-                    jsonKeszit(sc.nextLine());
+                    sc.close();
+                    fut = false;
                     break;
                 }
-                case 5: {
-                    System.out.println("Menteni kivant YAML fajl neve??");
-                    yamlKeszit(sc.nextLine());
-                    break;
-                }
-                case 6: { sc.close(); fut = false; break;}
                 default: System.out.println("Nem letezo menupont!");
             }
         }
     }
 
-    private void szamolasKonzollal(){
+    private void szamolasKonzollal() {
+        Input input = new Input();
+        Output output = new Output();
+        double[] operandusok = new double[2];
+
         System.out.println("Gepelje be az 'osszead' , 'kivon' , 'szoroz' , 'oszt' szavak valamelyiket a megfelelo muvelethez!");
         String muvelet = sc.nextLine();
-        if (!(muvelet.equals("osszead")||muvelet.equals("kivon")||muvelet.equals("szoroz")||muvelet.equals("oszt")))
+
+        if (!(muvelet.equals("osszead") || muvelet.equals("kivon") || muvelet.equals("szoroz") || muvelet.equals("oszt"))){
+            output.setUzenet("Ervenytelen muvelet!");
+            output.setHibakod(Hibakod.ERVENYTELENMUVELET);
             try {
-                throw new InvalidProcedureException();
-            }
-            catch (InvalidProcedureException e) {
-                System.out.println("Ervenytelen muvelet!");
+                marshaller.marshalJson(output);
+                System.out.println("Ervenytelen muvelet! Hibaleiro JSON elkeszult");
                 return;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+
         try {
+            input.setMuvelet(muvelet);
             System.out.println("a = ");
-            int a = Integer.parseInt(sc.nextLine());
+            double a = Double.parseDouble(sc.nextLine());
+            operandusok[0] = a;
             System.out.println("b = ");
-            int b = Integer.parseInt(sc.nextLine());
-            double eredmeny = szerviz.szamol(marshaller.ujInput(muvelet, a, b));
-            System.out.println("Eredmeny: " + eredmeny);
-        }
-        catch (NumberFormatException e) {
+            double b = Double.parseDouble(sc.nextLine());
+            operandusok[1] = b;
+            input.setOperandusok(operandusok);
+            output = szerviz.szamol(input);
+            if(output.getHibakod() == Hibakod.NULLAVALVALOOSZTAS){
+                System.out.println("0-val valo osztas!");
+                marshaller.marshalJson(output);
+                System.out.println("Hibaleiro JSON elmentve!");
+            } else {
+                System.out.println("Eredmeny: " + output.getEredmeny());
+                marshaller.marshalJson(output);
+                System.out.println("Output JSON elmentve!");
+            }
+        } catch (NumberFormatException e) {
             System.out.println("Hibas szam(ok)!");
+        } catch (InputMismatchException e) {
+            output.setUzenet("Ervenytelen bemenet!");
+            output.setHibakod(Hibakod.ERVENYTELENBEMENET);
+            try {
+                marshaller.marshalJson(output);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            System.out.println("Ervenytelen bemenet! Hibaleiro JSON elmentve!!");
+        } catch (IOException e) {
+            System.out.println("Hiba a fajlmuvelet kozben!");
         }
-        catch (InvalidProcedureException e) {
-            System.out.println("Ervenytelen muvelet!");
-        }
-        catch (DivisionByZeroException e) {
-            System.out.println("0-val valo osztas!");
-        }
+
     }
 
-    private void szamolasJsonnel(String jsonFajl) {
+    private void szamolasJsonnel() {
+        Output output;
+        Input input;
+        double eredmeny;
         try {
-            marshaller.marshalJson(szerviz.szamol(marshaller.unMarshalJson(jsonFajl + ".json")), "", 0);
-            Input input;
-            double eredmeny;
-            input = marshaller.unMarshalJson(jsonFajl + ".json");
-            eredmeny = szerviz.szamol(input);
+            input = marshaller.unMarshalJsonFile("Proba.json");
+            System.out.println("Bemeneti JSON fajl tartalma: "+input.getMuvelet()+", "+input.getOperandus1()+", "+input.getOperandus2());
+            output = szerviz.szamol(marshaller.unMarshalJsonFile("Proba.json"));
+            eredmeny = output.getEredmeny();
             System.out.println("Az eredmeny: " + eredmeny);
+            marshaller.marshalJson(output);
+            System.out.println("Output JSON elmentve!");
         }
-        catch (IOException | InvalidProcedureException | DivisionByZeroException e) {
+        catch (IOException e) {
             System.out.println("Hiba! - " + e.getMessage());
         }
     }
 
-    private void szamolasYamllal(String yamlFajl) {
+    private void szamolasYamllal() {
+        Output output;
+        Input input;
+        double eredmeny;
         try {
-            marshaller.marshalYaml(szerviz.szamol(marshaller.unMarshalYaml(yamlFajl + ".yaml")), "", 0);
-            Input input;
-            double eredmeny;
-            input = marshaller.unMarshalYaml(yamlFajl + ".yaml");
-            eredmeny = szerviz.szamol(input);
+            input = marshaller.unMarshalYamlFile("Proba.yaml");
+            System.out.println("Bemeneti YAML fajl tartalma: "+input.getMuvelet()+", "+input.getOperandus1()+", "+input.getOperandus2());
+            output = szerviz.szamol(marshaller.unMarshalYamlFile("Proba.yaml"));
+            eredmeny = output.getEredmeny();
             System.out.println("Az eredmeny: " + eredmeny);
+            marshaller.marshalYaml(output);
+            System.out.println("Output YAML elmentve!");
         }
-        catch (IOException | InvalidProcedureException | DivisionByZeroException e) {
-            System.out.println("Hiba! - " + e.getMessage());
-        }
-    }
-
-    private void jsonKeszit(String jsonFajl) {
-        System.out.println("Geplje be soronkent az alabbi muveletek egyiket 'osszead,kivon,szoroz,oszt' majd az elso es a masodik operandus erteket!");
-        try {
-            marshaller.keszitsInputJsont(jsonFajl,sc.nextLine(),Integer.parseInt(sc.nextLine()),Integer.parseInt(sc.nextLine()));
-        } catch (InvalidProcedureException | IOException | NumberFormatException e) {
-            System.out.println("Hiba! - " + e.getMessage());
-        }
-    }
-
-    private void yamlKeszit(String yamlFajl) {
-        System.out.println("Geplje be soronkent az alabbi muveletek egyiket 'osszead,kivon,szoroz,oszt' majd az elso es a masodik operandus erteket!");
-        try {
-            marshaller.keszitsInputYamlt(yamlFajl,sc.nextLine(),Integer.parseInt(sc.nextLine()),Integer.parseInt(sc.nextLine()));
-        } catch (InvalidProcedureException | IOException | NumberFormatException e) {
+        catch (IOException e) {
             System.out.println("Hiba! - " + e.getMessage());
         }
     }

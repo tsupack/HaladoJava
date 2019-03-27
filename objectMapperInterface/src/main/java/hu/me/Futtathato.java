@@ -1,24 +1,29 @@
 package hu.me;
 
-import hu.me.exceptions.DivisionByZeroException;
-import hu.me.exceptions.InvalidProcedureException;
-
 import java.io.IOException;
 
 public class Futtathato {
     public static void main(String[] args) {
-
         Marshaller marshaller = new Marshaller();
-        Szerviz szerviz = new Szerviz();
+        Szerviz szerviz = new Szerviz(new Szamologep());
+
+        String jsonBemenet = "{\"muvelet\": \"osszead\", \"operandusok\": [3, 4]}";
+        String yamlBemenet = "---\n" +
+                "muvelet: \"kivon\"\n" +
+                "operandusok:\n" +
+                "- 10\n" +
+                "- 7";
 
         try {
-            marshaller.keszitsInputJsont("JsonInput", "osszead", 2, 3);
-            marshaller.keszitsInputYamlt("YamlInput", "kivon", 10, 7);
-            double jsonEredmeny = szerviz.szamol(marshaller.unMarshalJson("JsonInput.json"));
-            double yamlEredmeny = szerviz.szamol(marshaller.unMarshalYaml("YamlInput.yaml"));
-            marshaller.marshalJson(jsonEredmeny, "Minden rendben!", 100);
-            marshaller.marshalYaml(yamlEredmeny, "Minden rendben!", 100);
-        } catch (InvalidProcedureException | DivisionByZeroException | IOException e) {
+            marshaller.marshalJsonFile(szerviz.szamol(marshaller.unMarshalJsonFile("JsonInput.json")));
+            marshaller.marshalYamlFile(szerviz.szamol(marshaller.unMarshalYamlFile("YamlInput.yaml")));
+
+            Output jsonEredmenyStrinbol = szerviz.szamol(marshaller.unMarshal(jsonBemenet, "json"));
+            marshaller.marshalJson(jsonEredmenyStrinbol);
+
+            Output yamlEredmenyStrinbol = szerviz.szamol(marshaller.unMarshal(yamlBemenet, "yaml"));
+            marshaller.marshalYaml(yamlEredmenyStrinbol);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

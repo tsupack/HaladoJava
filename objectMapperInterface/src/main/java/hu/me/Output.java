@@ -4,7 +4,7 @@ public class Output {
 
     private double eredmeny;
     private String uzenet;
-    private int hibakod;
+    private Hibakod hibakod;
 
     public double getEredmeny() {
         return eredmeny;
@@ -22,11 +22,11 @@ public class Output {
         this.uzenet = uzenet;
     }
 
-    public int getHibakod() {
+    public Hibakod getHibakod() {
         return hibakod;
     }
 
-    public void setHibakod(final int hibakod) {
+    public void setHibakod(Hibakod hibakod) {
         this.hibakod = hibakod;
     }
 }
