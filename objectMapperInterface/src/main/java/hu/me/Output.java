@@ -10,7 +10,7 @@ public class Output {
         return eredmeny;
     }
 
-    public void setEredmeny(double eredmeny) {
+    public void setEredmeny(final double eredmeny) {
         this.eredmeny = eredmeny;
     }
 
@@ -18,7 +18,7 @@ public class Output {
         return uzenet;
     }
 
-    public void setUzenet(String uzenet) {
+    public void setUzenet(final String uzenet) {
         this.uzenet = uzenet;
     }
 
