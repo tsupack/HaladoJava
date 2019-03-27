@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Számológép</title>
+    <style>
+        .field-error{
+            background: red;
+        }
+        .frontend{
+            text-align: center;
+         }
+    </style>
+</head>
+<body>
+    <div class="frontend">
+        <form action="#" method="post" th:object="${input}">
+            Művelet:
+            <select th:field="*{muvelet}" th:class="${#fields.hasErrors('muvelet')}? field-error">
+                <option th:value="''" th:text="''"></option>
+                <option th:value="'osszead'" th:text="'Összeadás'"></option>
+                <option th:value="'kivon'" th:text="'Kivonás'"></option>
+                <option th:value="'szoroz'" th:text="'Szorzás'"></option>
+                <option th:value="'oszt'" th:text="'Osztás'"></option>
+            </select>
+            <p th:if="${#fields.hasErrors('muvelet')}" th:errors="*{muvelet}">!</p><br>
+
+            A: <input type="number" th:field="*{a}" th:class="${#fields.hasErrors('a')}? field-error" required="required">
+            <p th:if="${#fields.hasErrors('a')}" th:errors="*{a}">A operátor érvénytelen!</p><br>
+
+            B: <input type="number" th:field="*{b}" th:class="${#fields.hasErrors('b')}? field-error" required="required">
+            <p th:if="${#fields.hasErrors('b')}" th:errors="*{b}">B operátor érvénytelen!</p><br>
+            <input type="submit" value="Számol">
+        </form>
+        <br>Eredmény : <span th:text="${eredmeny}"></span>
+        <br>Log : <span th:text="${log}"></span>
+    </div>
+</body>
+</html>
