@@ -122,7 +122,7 @@ public class Kontroller {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/log")
-    @ResponseBody
+    @ResponseBody//JSON-be húzza a választ
     public List<String> log() {
         return szerviz.getLog();
     }
