@@ -27,6 +27,16 @@
 
             B: <input type="number" th:field="*{b}" th:class="${#fields.hasErrors('b')}? field-error" >
             <p th:if="${#fields.hasErrors('b')}" th:errors="*{b}">B operátor érvénytelen!</p><br>
+
+            Felhasználó azonosító: <input type="number" th:field="*{userID}" th:class="${#fields.hasErrors('userID')}? field-error" >
+            <p th:if="${#fields.hasErrors('userID')}" th:errors="*{userID}">Az azonosító érvénytelen!</p><br>
+
+            Felhasználó név: <input type="text" th:field="*{userName}" th:class="${#fields.hasErrors('userName')}? field-error" >
+            <p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">A név érvénytelen!</p><br>
+
+            Felhasználó életkor: <input type="number" th:field="*{userAge}" th:class="${#fields.hasErrors('userAge')}? field-error" >
+            <p th:if="${#fields.hasErrors('userAge')}" th:errors="*{userAge}">A kor érvénytelen!</p><br>
+
             <input type="submit" value="Számol">
         </form>
         <br>Eredmény : <span th:text="${eredmeny}"></span>

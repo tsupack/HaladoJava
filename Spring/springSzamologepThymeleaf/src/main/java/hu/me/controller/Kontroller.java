@@ -1,10 +1,11 @@
 package hu.me.controller;
 
 import hu.me.controller.dto.Input;
-import hu.me.service.InputValidator;
+import hu.me.entity.Felhasznalo;
+import hu.me.entity.Szamolas;
+import hu.me.utils.InputValidator;
 import hu.me.service.Szerviz;
 import hu.me.exceptions.DivisionByZeroException;
-import hu.me.service.exceptions.NullOperatorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,14 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +68,7 @@ public class Kontroller {
         operatorok.add("kivon");
         operatorok.add("szoroz");
         operatorok.add("oszt");
+        operatorok.add("osszes");
         return operatorok;
     }
 
@@ -76,7 +76,7 @@ public class Kontroller {
     public ModelAndView initialize(){
         ModelAndView MAV = new ModelAndView();
         MAV.setViewName("index");
-        MAV.addObject("input", new Input("osszead", 0, 0));
+        MAV.addObject("input", new Input("osszead", 0, 0, 0, "",0));
         MAV.addObject("eredmeny", 0);
         MAV.addObject("log", "Üres");
         return MAV;
@@ -94,25 +94,18 @@ public class Kontroller {
             MAV.setViewName("index");
         } else {
             try {
-                MAV.addObject("eredmeny", szerviz.szamol(input));
-            } catch (DivisionByZeroException e){
-                MAV.addObject("log", szerviz.getLog());
-                MAV.setViewName("index");
-                return MAV;
-            } catch (NullOperatorException e) {
-                MAV.addObject("log", szerviz.getLog());
-                MAV.setViewName("index");
-                return MAV;
-            }
-            try {
-                szerviz.log("{" + input.getA() + " " + input.getMuvelet() + " " + input.getB() + " = " + szerviz.szamol(input) + "}");
-                MAV.addObject("log", szerviz.getLog());
-                MAV.setViewName("index");
+                MAV.addObject("eredmeny", szerviz.szamol(input, true));
             } catch (DivisionByZeroException e) {
                 MAV.addObject("log", szerviz.getLog());
                 MAV.setViewName("index");
                 return MAV;
-            } catch (NullOperatorException e) {
+            }
+
+            try {
+                szerviz.log("{" + input.getA() + " " + input.getMuvelet() + " " + input.getB() + " = " + szerviz.szamol(input, false) + " , " + input.getUserID() + " , " + input.getUserName() + " , " + input.getUserAge() + "}");
+                MAV.addObject("log", szerviz.getLog());
+                MAV.setViewName("index");
+            } catch (DivisionByZeroException e) {
                 MAV.addObject("log", szerviz.getLog());
                 MAV.setViewName("index");
                 return MAV;
@@ -121,9 +114,38 @@ public class Kontroller {
         return MAV;
     }
 
+    //Művelet szerinti számolás listázás
+    @RequestMapping(method = RequestMethod.POST, path = "/listByOperator")
+    @ResponseBody
+    public Iterable<Szamolas> output(String muvelet){
+
+        System.out.println(muvelet);
+
+        if ("osszes".equals(muvelet)) {
+            return szerviz.getSzamolasok();
+        } else {
+            return szerviz.getByMuvelet(muvelet);
+        }
+    }
+
+    //Alap log listázása
     @RequestMapping(method = RequestMethod.GET, path = "/log")
     @ResponseBody//JSON-be húzza a választ
     public List<String> log() {
         return szerviz.getLog();
+    }
+
+    //Adatbázis szerinti számolás listázás
+    @RequestMapping(method = RequestMethod.GET, path = "/logH2Calculations")
+    @ResponseBody//JSON-be húzza a választ
+    public Iterable<Szamolas> logH2Calculations() {
+        return szerviz.getSzamolasok();
+    }
+
+    //Adatbázis szerinti felhasználó listázás
+    @RequestMapping(method = RequestMethod.GET, path = "/logH2Users")
+    @ResponseBody//JSON-be húzza a választ
+    public Iterable<Felhasznalo> logH2Users() {
+        return szerviz.getFelhasznalok();
     }
 }
