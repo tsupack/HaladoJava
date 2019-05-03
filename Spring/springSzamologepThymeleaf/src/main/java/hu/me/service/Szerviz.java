@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class Szerviz {
@@ -82,6 +81,28 @@ public class Szerviz {
     //Adatbázisból csak a kiválasztott műveletnek megfelelő számolások lekérése
     public Iterable<Szamolas> getByMuvelet(String muvelet) {
         return szamolasRepository.findByMuvelet(muvelet);
+    }
+
+    public List<String> getByMuveletFinal(String muvelet){
+        Iterable <Szamolas> szamolasok = getByMuvelet(muvelet);
+        Iterable <Felhasznalo> felhasznalok = getFelhasznalok();
+        List<String> data = new ArrayList<>();
+
+        for (Felhasznalo felhasznalo: felhasznalok) {
+            for (Szamolas szamolas : szamolasok) {
+                if(felhasznalo.getUserID() == szamolas.getUserID()){
+                    data.add("UserID: " + szamolas.getUserID() +
+                            ", UserName: " + felhasznalo.getUserName() +
+                            ", UserAge: " + felhasznalo.getUserAge() +
+                            ", Calculation: " + szamolas.getA() +
+                            " " + szamolas.getMuvelet() +
+                            " " + szamolas.getB() +
+                            " = " + szamolas.getEredmeny()
+                    );
+                }
+            }
+        }
+        return data;
     }
 
     //Adatbázisból csak a felhasználó műveleteinek listázása

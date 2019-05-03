@@ -122,15 +122,9 @@ public class Kontroller {
     //Művelet szerinti számolás listázás
     @RequestMapping(method = RequestMethod.POST, path = "/listByOperator")
     @ResponseBody
-    public Iterable<Szamolas> output(String muvelet){
-
+    public List<String> output(String muvelet){
         System.out.println(muvelet);
-
-        if ("osszes".equals(muvelet)) {
-            return szerviz.getSzamolasok();
-        } else {
-            return szerviz.getByMuvelet(muvelet);
-        }
+        return szerviz.getByMuveletFinal(muvelet);
     }
 
     //Alap log listázása
