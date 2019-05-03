@@ -79,6 +79,7 @@ public class Kontroller {
         MAV.addObject("input", new Input("osszead", 0, 0, 0, "",0));
         MAV.addObject("eredmeny", 0);
         MAV.addObject("log", "Üres");
+        MAV.addObject("userData", "Üres");
         return MAV;
     }
 
@@ -95,18 +96,22 @@ public class Kontroller {
         } else {
             try {
                 MAV.addObject("eredmeny", szerviz.szamol(input, true));
-            } catch (DivisionByZeroException e) {
-                MAV.addObject("log", szerviz.getLog());
-                MAV.setViewName("index");
-                return MAV;
-            }
+                szerviz.log("{" + input.getA() +
+                        " " + input.getMuvelet() +
+                        " " + input.getB() +
+                        " = " + szerviz.szamol(input, false) +
+                        " , " + input.getUserID() +
+                        " , " + input.getUserName() +
+                        " , " + input.getUserAge() +
+                        "}"
+                );
 
-            try {
-                szerviz.log("{" + input.getA() + " " + input.getMuvelet() + " " + input.getB() + " = " + szerviz.szamol(input, false) + " , " + input.getUserID() + " , " + input.getUserName() + " , " + input.getUserAge() + "}");
                 MAV.addObject("log", szerviz.getLog());
+                MAV.addObject("userData", szerviz.getUserData(input.getUserID()));
+                //Itt csak az éppen belépett felhasználó összes számolását adjuk vissza.
+                //Az ID fixen létezik, mert már validált és mentett is!
                 MAV.setViewName("index");
             } catch (DivisionByZeroException e) {
-                MAV.addObject("log", szerviz.getLog());
                 MAV.setViewName("index");
                 return MAV;
             }
@@ -147,5 +152,17 @@ public class Kontroller {
     @ResponseBody//JSON-be húzza a választ
     public Iterable<Felhasznalo> logH2Users() {
         return szerviz.getFelhasznalok();
+    }
+
+    //Felhasználó azonosító szerinti listázás, védelmi ellenőrzéssel is (nincs külön validátor osztály rá)
+    @RequestMapping(method = RequestMethod.POST, path = "/listByUser")
+    @ResponseBody
+    public List<String> logH2UserCalculations(int userID) {
+        if (szerviz.isExisting(userID)) {
+            return szerviz.getUserData(userID);
+        } else {
+            System.out.println("Non existent userID!");
+            return null;
+        }
     }
 }

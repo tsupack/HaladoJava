@@ -1,5 +1,6 @@
 package hu.me.service;
 
+import hu.me.Szamologep;
 import hu.me.controller.dto.Input;
 import hu.me.SzamologepInterface;
 import hu.me.entity.Felhasznalo;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Szerviz {
@@ -80,5 +82,46 @@ public class Szerviz {
     //Adatbázisból csak a kiválasztott műveletnek megfelelő számolások lekérése
     public Iterable<Szamolas> getByMuvelet(String muvelet) {
         return szamolasRepository.findByMuvelet(muvelet);
+    }
+
+    //Adatbázisból csak a felhasználó műveleteinek listázása
+    public List<String> getUserData(int userID){
+        Iterable<Szamolas> szamolasok = szamolasRepository.findAll();
+        Iterable<Felhasznalo> felhasznalok = felhasznaloRepository.findAll();
+        List<String> data = new ArrayList<>();
+
+        for (Szamolas szamolas : szamolasok) {
+            for (Felhasznalo felhasznalo: felhasznalok) {
+                if(szamolas.getUserID() == felhasznalo.getUserID() && felhasznalo.getUserID() == userID){
+                    data.add("UserID: " + szamolas.getUserID() +
+                            ", UserName: " + felhasznalo.getUserName() +
+                            ", UserAge: " + felhasznalo.getUserAge() +
+                            ", Calculation: " + szamolas.getA() +
+                            " " + szamolas.getMuvelet() +
+                            " " + szamolas.getB() +
+                            " = " + szamolas.getEredmeny()
+                    );
+                }
+            }
+        }
+        return data;
+    }
+
+    //Adatbázis ellenőrzés felhasználó létezésre
+    public Boolean isExisting(int userID){
+        Iterable<Felhasznalo> felhasznalok = felhasznaloRepository.findAll();
+        int found = 0;
+
+        for (Felhasznalo felhasznalo: felhasznalok) {
+            if(felhasznalo.getUserID() == userID){
+                found++;
+            }
+        }
+
+        if (found != 0){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
